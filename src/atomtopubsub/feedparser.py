@@ -165,7 +165,7 @@ class FeedParser:
     def _fetch_with_timeout(self, url: str, attempt: int) -> Any:
         """Fetch feed with timeout support."""
         socket.setdefaulttimeout(self._timeout)
-        parsed = feedparser.parse(url, timeout=self._timeout)
+        parsed = feedparser.parse(url)
         return parsed
 
     def _parse_feed_info(self, feed: Any) -> FeedInfo:
