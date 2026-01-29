@@ -1,0 +1,17 @@
+{
+  "jid": "user@xmpp-server.tld",
+  "secret": "your-xmpp-password",
+  "resource": "atomtopubsub",
+  "refresh_time": 60,
+  "log_level": "INFO",
+  "feeds": {
+    "MovimNews": {
+      "url": "https://movim.eu/feed",
+      "server": "pubsub.movim.eu"
+    },
+    "XMPPNews": {
+      "url": "https://xmpp.org/feeds/atom.xml",
+      "server": "pubsub.xmpp.org"
+    }
+  }
+}

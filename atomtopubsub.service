@@ -1,0 +1,27 @@
+[Unit]
+Description=AtomToPubsub - Atom Feed to XMPP Pubsub Bridge
+Documentation=https://github.com/edhelas/atomtopubsub
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=atomtopubsub
+Group=atomtopubsub
+WorkingDirectory=/var/lib/atomtopubsub
+ExecStart=/usr/bin/atomtopubsub --config /etc/atomtopubsub/config.json
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=atomtopubsub
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadOnlyPaths=/etc/atomtopubsub
+
+[Install]
+WantedBy=multi-user.target
