@@ -189,18 +189,34 @@ class FeedParser:
         version = getattr(entry, "version", "")
 
         if version == "rss20" or "rss10" in str(version):
-            if hasattr(entry, "content"):
+            # Prioritize content:encoded (used by Substack and many other feeds)
+            if hasattr(entry, "content_encoded") and entry.content_encoded:
+                content = self._parse_html_content(entry.content_encoded)
+                logger.debug("Found content in content_encoded for: %s", title[:50])
+            elif hasattr(entry, "content") and entry.content:
                 content = self._parse_html_content(entry.content[0].value)
-            elif hasattr(entry, "description"):
+                logger.debug("Found content in content for: %s", title[:50])
+            elif hasattr(entry, "summary") and entry.summary:
+                # Use summary as fallback (often contains full content)
+                content = self._parse_html_content(entry.summary)
+                logger.debug("Found content in summary for: %s", title[:50])
+            elif hasattr(entry, "description") and entry.description:
                 description = entry.description
+                logger.debug("Only description for: %s", title[:50])
         elif version == "atom03":
             if hasattr(entry, "content"):
                 content = self._parse_atom_content(entry.content)
         elif version == "atom10":
             if hasattr(entry, "content"):
                 content = self._parse_html_content(entry.content[0].value)
+            elif hasattr(entry, "summary") and entry.summary:
+                content = self._parse_html_content(entry.summary)
             elif hasattr(entry, "description"):
                 description = entry.description
+
+        # Additional fallback: check for any content field
+        if not content and hasattr(entry, "summary") and entry.summary:
+            content = self._parse_html_content(entry.summary)
 
         links: list[dict[str, str]] = []
         if hasattr(entry, "links"):
